@@ -27,6 +27,9 @@ const orderSchema = new _mongoose.default.Schema({
       type: String,
       required: true
     },
+    size: {
+      type: String
+    },
     product: {
       type: _mongoose.default.Schema.Types.ObjectId,
       ref: 'product',

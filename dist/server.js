@@ -18,6 +18,16 @@ var _productRouter = _interopRequireDefault(require("./router/productRouter.js")
 
 var _UploadRouter = _interopRequireDefault(require("./router/UploadRouter.js"));
 
+var _path = _interopRequireDefault(require("path"));
+
+var _queryRouter = _interopRequireDefault(require("./router/queryRouter"));
+
+var _MailRouter = _interopRequireDefault(require("./router/MailRouter"));
+
+var _RazorpayRouter = _interopRequireDefault(require("./router/RazorpayRouter"));
+
+var _compression = _interopRequireDefault(require("compression"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const app = (0, _express.default)();
@@ -32,17 +42,28 @@ _mongoose.default.connect(_config.default.MONGODB_URL, {
 });
 
 app.use((0, _cors.default)());
+app.use((0, _compression.default)({
+  level: 6
+}));
 app.use(_bodyParser.default.json());
 app.use("/api/uploads", _UploadRouter.default);
 app.use("/api/users", _userRouter.default);
+app.use("/api/query", _queryRouter.default);
 app.use("/api/products", _productRouter.default);
 app.use("/api/orders", _orderRouter.default);
+app.use("/api/sendordermail", _MailRouter.default);
+app.use("/api/razorpay", _RazorpayRouter.default);
+app.use(_express.default.static(_path.default.join(__dirname, "/../frontend")));
+app.get("*", (req, res) => {
+  res.sendFile(__dirname, "/../frontend/index.html");
+});
 app.use((err, req, res, next) => {
-  const status = err.name && err.name === 'ValidationError' ? 400 : 500;
+  const status = err.name && err.name === "ValidationError" ? 400 : 500;
   res.status(status).send({
     message: err.message
   });
 });
-app.listen(8080, _ => {
-  console.log('serve at PORT 8080');
+const port = _config.default.PORT;
+app.listen(port, _ => {
+  console.log("serve at " + _config.default.PORT);
 });

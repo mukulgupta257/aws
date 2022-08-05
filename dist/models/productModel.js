@@ -9,6 +9,30 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const reviewSchema = new _mongoose.default.Schema({
+  user: {
+    type: _mongoose.default.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  rating: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  comment: {
+    type: String,
+    required: true
+  }
+}, {
+  timestamps: true
+});
 const productSchema = new _mongoose.default.Schema({
   name: {
     type: String,
@@ -39,8 +63,7 @@ const productSchema = new _mongoose.default.Schema({
     required: true
   },
   image4: {
-    type: String,
-    required: true
+    type: String
   },
   stock: {
     type: Number,
@@ -52,21 +75,22 @@ const productSchema = new _mongoose.default.Schema({
     default: 0.0,
     required: true
   },
+  discountPrice: {
+    type: Number,
+    default: 0.0,
+    required: true
+  },
   rating: {
     type: Number,
     default: 0.0,
     required: true
   },
-  reviews: {
-    type: Number,
-    default: 0.0,
-    required: true
-  }
+  reviews: [reviewSchema]
 }, {
   timestamps: true
 });
 
-const Product = _mongoose.default.model('product', productSchema);
+const Product = _mongoose.default.model("product", productSchema);
 
 var _default = Product;
 exports.default = _default;
