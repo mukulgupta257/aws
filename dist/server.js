@@ -14,7 +14,9 @@ var _bodyParser = _interopRequireDefault(require("body-parser"));
 
 var _orderRouter = _interopRequireDefault(require("./router/orderRouter.js"));
 
-var _productRouter = _interopRequireDefault(require("./router/productRouter.js"));
+var _productRouter = _interopRequireDefault(
+  require("./router/productRouter.js")
+);
 
 var _UploadRouter = _interopRequireDefault(require("./router/UploadRouter.js"));
 
@@ -24,27 +26,36 @@ var _queryRouter = _interopRequireDefault(require("./router/queryRouter"));
 
 var _MailRouter = _interopRequireDefault(require("./router/MailRouter"));
 
-var _RazorpayRouter = _interopRequireDefault(require("./router/RazorpayRouter"));
+var _RazorpayRouter = _interopRequireDefault(
+  require("./router/RazorpayRouter")
+);
 
 var _compression = _interopRequireDefault(require("compression"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 const app = (0, _express.default)();
 
-_mongoose.default.connect(_config.default.MONGODB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(_ => {
-  console.log("connected to mongodb");
-}).catch(error => {
-  console.log(error.reason);
-});
+_mongoose.default
+  .connect("mongodb://localhost:27017/awsDB", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then((_) => {
+    console.log("connected to mongodb");
+  })
+  .catch((error) => {
+    console.log(error.reason);
+  });
 
 app.use((0, _cors.default)());
-app.use((0, _compression.default)({
-  level: 6
-}));
+app.use(
+  (0, _compression.default)({
+    level: 6,
+  })
+);
 app.use(_bodyParser.default.json());
 app.use("/api/uploads", _UploadRouter.default);
 app.use("/api/users", _userRouter.default);
@@ -60,10 +71,9 @@ app.get("*", (req, res) => {
 app.use((err, req, res, next) => {
   const status = err.name && err.name === "ValidationError" ? 400 : 500;
   res.status(status).send({
-    message: err.message
+    message: err.message,
   });
 });
-const port = _config.default.PORT;
-app.listen(port, _ => {
-  console.log("serve at " + _config.default.PORT);
+app.listen(80, (_) => {
+  console.log("serve at 80");
 });
